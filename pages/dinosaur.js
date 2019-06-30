@@ -1,7 +1,19 @@
 import { withTranslation } from '../lib/i18n';
+import { data } from '../data';
 
-const Dinosaurs = ({ t }) => {
-	return <div>{t('Hello Dinosaurs')}</div>;
+const dinosaur = ({ t, dinosaur }) => {
+	return (
+		<div>
+			{t('Hello Dinosaurs')} {dinosaur.name}
+		</div>
+	);
 };
 
-export default withTranslation('common')(Dinosaurs);
+dinosaur.getInitialProps = ({ query }) => {
+	let error = false;
+	const dinosaur = data.find((dino) => dino.name === query.slug);
+	if (!dinosaur) error = true;
+	return { dinosaur, error };
+};
+
+export default withTranslation('common')(dinosaur);
