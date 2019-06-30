@@ -1,5 +1,7 @@
-function Dinosaurs() {
-	return <div>I'm a dinosaur!</div>;
-}
+import { withTranslation } from '../lib/i18n';
 
-export default Dinosaurs;
+const Dinosaurs = ({ t }) => {
+	return <div>{t('Hello Dinosaurs')}</div>;
+};
+
+export default withTranslation('common')(Dinosaurs);
