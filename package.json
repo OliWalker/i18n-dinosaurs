@@ -1,0 +1,28 @@
+{
+	"name": "i18n-dinosaurs",
+	"version": "1.0.0",
+	"description": "Demo to i18n a Next.js app",
+	"main": "index.js",
+	"scripts": {
+		"dev": "next",
+		"build": "next build",
+		"start": "next start",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/OliWalker/i18n-dinosaurs.git"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/OliWalker/i18n-dinosaurs/issues"
+	},
+	"homepage": "https://github.com/OliWalker/i18n-dinosaurs#readme",
+	"dependencies": {
+		"next": "^8.1.0",
+		"react": "^16.8.6",
+		"react-dom": "^16.8.6"
+	}
+}
