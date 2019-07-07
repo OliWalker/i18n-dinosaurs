@@ -1,31 +1,31 @@
 import React from 'react';
-import { withTranslation, Link } from '../lib/i18n';
-import Layout from '../components/Layout';
-import Banner from '../components/Banner';
-import { data } from '../data';
+import { withTranslation } from '../i18n';
+import css from '../styles.css';
 
-const Home = () => {
+import data from '../data';
+import Header from '../components/Header';
+import DinosaurCard from '../components/DinosaurCard';
+
+const HomePage = ({ t }) => {
 	return (
-		<Layout>
-			<Banner />
-			{data.map((dino) => (
-				<Link
-					href={{
-						pathname: '/dinosaur',
-						query: { slug: dino.name },
-					}}
-				>
-					<p>{dino.name}</p>
-				</Link>
-			))}
-		</Layout>
+		<>
+			<Header />
+			<div className={css.banner}>
+				<h1>{t('banner')}</h1>
+			</div>
+			<div className={css.dinosaurList}>
+				{data.map((dinosaur) => (
+					<DinosaurCard dinosaur={dinosaur} key={dinosaur.name} />
+				))}
+			</div>
+		</>
 	);
 };
 
-Home.getInitialProps = () => {
+HomePage.getInitialProps = () => {
 	return {
-		namespacesRequired: ['common', 'banner'],
+		namespacesRequired: ['homePage'],
 	};
 };
 
-export default withTranslation('common')(Home);
+export default withTranslation('homePage')(HomePage);

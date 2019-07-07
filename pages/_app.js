@@ -1,6 +1,6 @@
-import React from 'react';
 import App, { Container } from 'next/app';
-import { appWithTranslation } from '../lib/i18n';
+import { appWithTranslation } from '../i18n';
+import '../styles.css';
 
 class MyApp extends App {
 	static async getInitialProps({ Component, ctx }) {

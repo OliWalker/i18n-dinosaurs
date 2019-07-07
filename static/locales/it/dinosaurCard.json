@@ -1,0 +1,4 @@
+{
+	"name": "Nome: {{name}}",
+	"diet": "Dieta: {{diet}}"
+}
