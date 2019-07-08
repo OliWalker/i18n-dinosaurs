@@ -22,6 +22,7 @@
 	},
 	"homepage": "https://github.com/OliWalker/i18n-dinosaurs#readme",
 	"dependencies": {
+		"@yolkai/next-routes": "^3.0.0",
 		"@zeit/next-css": "^1.0.1",
 		"express": "4.17.1",
 		"next": "8.1.0",
