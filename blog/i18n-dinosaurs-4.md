@@ -27,11 +27,151 @@ We will also add a `lang` for our own sake later.
 so the `routes.js` file should look like:
 
 ```
-export const routeMap = [
-    { page: 'dinosaur', lang: 'en', pattern: '/dinosaur' },
-  { page: 'dinosaur', lang: 'de', pattern: '/anwalt' },
-  { page: 'dinosaur', lang: 'fr', pattern: '/avocat' },
-  { page: 'dinosaur', lang: 'it', pattern: '/avvocato' },
-]
+const routeMap = [
+  { page: 'dinosaur', lang: 'en', pattern: '/dinosaur', name: '/dinosaur' },
+  {
+    page: 'dinosaur',
+    lang: 'de',
+    pattern: '/dinosaurier',
+    name: '/dinosaurier',
+  },
+  { page: 'dinosaur', lang: 'fr', pattern: '/dinosaure', name: '/dinosaure' },
+  { page: 'dinosaur', lang: 'it', pattern: '/dinosauro', name: '/dinosauro' },
+];
+
+module.exports = routeMap;
 
 ```
+
+Now lets start building out our next-routes router, in the router.js file lets:
+
+```
+import nextRoutes from '@yolkai/next-routes';
+import { routeMap } from './routes';
+
+// Initialise our next-routes
+const nextRoutes = nextRoutes();
+
+// add each route in our routeMap to the next-routes router
+routeMap.forEach((route) => {
+    nextRoutes.add(route);
+});
+
+export default nextRoutes;
+```
+
+Now in our server.js file we must change it from the app using the requestHandler, but the router will getRequestHandler and pass the app as an argument.
+
+So if we require our `nextRouter` in the `server.js` file and then change
+
+```
+const handle = app.getRequestHandler();
+```
+
+to
+
+```
+const handle = nextRouter.getRequestHandler(app);
+```
+
+and then restart the server we should be able to access the translated dinosaur routes! woo.
+
+### Removing the query
+
+Great! now the url is translated, we notice that the query is still `?dinosaur=Tyranasaurus` - we want the localised too. Fortunately another benefit that next-routes adds is we can add a `:id` at the end of a route, making it more similar to traditional routing. Obviously we are not looking for an id but a `dinosaur` so lets add `/:dinosaur` to the end of each pattern in the routes.
+
+Now if we head to `http://localhost:3000/dinosaur/Tyrannosaurus` then we are in business!
+
+TODO : NEXT 9?
+
+### Linking
+
+The problem now is that we are using the next-i18next link, which adds the `lang prefix` before the route and the next-i18next link will send out query such as `route?query=query`.
+
+Next-Routes also gives us a Link component, but if we were to use the Next-Routes Link then we would not get the language prefix :TODO thinkingface:
+
+The Solution?
+
+The Next-Routes can take a Link in the Constructor! so we can pass the next-i18next link when we initalise the next-router and get bothe benefits!
+
+In the router.js file lets
+
+```
+const { Link } = require ('./i18n).Link
+```
+
+and then pass the Link when we initialise next-routes
+
+```
+const nextRoutesRouter = nextRoutes({ Link });
+```
+
+then finally wherever we use the Link comonent (Header.js and DinosaurCard.js) we need to instead import the Link from this router file and instead of using the 'href' property on the link we can use the route property like
+
+```
+<Link route={`/dinosaur/${dinosaur.name}`}>
+```
+
+Everything kinda works but one problem here would be we are always linking to `/dinosaur` and not the translated url slug. Lets fix this by building yet another Link component.
+
+### Our Link component
+
+So we have the Link from Next.js, the Link from next-i18next which both get passed to the Link from Next-Routes, we deffinately need another one.
+
+in Components lets create a `Link.js` file and import our router link.
+
+The idea is to create a Link, which will take a `route` string that points to the desired `page` to render and also a `params` prop to pass to the url query. Then we will take this page, and the language, and using the RouteMap, find the correctly translated url slug to link to.
+
+Once we have this we must also pass the route params to get the correct dinosaur.
+
+```
+import { Link as RouterLink } from '../router';
+import { withTranslation } from '../i18n';
+import routeMap from '../routes';
+
+const Link = ({ path, params, i18n, children }) => {
+
+  // if the path is to the home - there are no translations
+  if (path === '/') {
+    return <RouterLink route='/'>{children}</RouterLink>;
+  }
+  // take the current language
+  const { language } = i18n;
+
+  // find the translated route
+  const translatedRoute = routeMap.find(
+    (route) => route.page === path && route.lang === language
+  );
+
+  return (
+    <RouterLink route={translatedRoute.name} params={params}>
+      {children}
+    </RouterLink>
+  );
+};
+
+export default withTranslation()(Link);
+```
+
+Cool! and now to use this Link we can simply pass the page from the pages directory and also any query params needed and then boom, this Link component will handle which language url to push to!
+
+### Icing on the cake
+
+So far everything is looking great, moving around our small, but international app feel perfect, however, currently we are able to go to `localhost:3000/it/dinosaur/Tyrannosaurus`. We should not be able to mismatch the url slug with the language prefix.
+
+This wont happen when linking around the app now we have build our magic Language finder Link component, the only time it will happen will be when manually changing the url - which will go back a hit the server one more time... Aha, if we are hitting the server we can just `redirect` the client!
+
+The top level `_app.js` component is where we shall do this, lets add a function called `redirectForIncorrectLocale` inside the `getInitialProps` method of the \_app, it will need access to the `ctx` and the `router`, both of which get passed to `_app.getInitialProps` by default - perfect. Your \_app should look like:
+
+```
+...
+class MyApp extends App {
+	static async getInitialProps({ Component, ctx, router }) {
+
+		redirectIfIncorrectLocale(ctx, router);
+...
+```
+
+and now lets create this function.
+
+### Redirecting for an incorrect locale
