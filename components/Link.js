@@ -19,7 +19,10 @@ const Link = ({ path, params = {}, i18n, children }) => {
 
   // nextRoutes gives a handy "toPath" function
   // where you pass the params and it spits out the correct URL
-  const newPath = translatedRoute.toPath(params);
+  let newPath = '';
+  try {
+    newPath = translatedRoute.toPath(params);
+  } catch (err) {}
 
   return <RouterLink route={newPath}>{children}</RouterLink>;
 };
