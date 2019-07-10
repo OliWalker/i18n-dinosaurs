@@ -9,7 +9,7 @@ const DinosaurCard = ({ dinosaur, t }) => {
     <Link path='/dinosaur' params={{ dinosaur: dinosaur.name }}>
       <a>
         <div className={css.dinosaurCard}>
-          {/* <img src={dinosaur.image} /> */}
+          <img src={dinosaur.image} />
           <h2>{t('name', { name: dinosaur.name })}</h2>
           <h3>{t('diet', { diet: dinosaur.diet })}</h3>
         </div>
