@@ -1,6 +1,5 @@
 import { Link as RouterLink } from '../router';
 import { withTranslation } from '../i18n';
-import routeMap from '../routes';
 import { routes } from '../router';
 
 const Link = ({ path, params = {}, i18n, children }) => {
@@ -11,20 +10,13 @@ const Link = ({ path, params = {}, i18n, children }) => {
   // take the current language
   const { language } = i18n;
 
-  // find the translated route
-  const translatedRoute = routeMap.find(
-    (route) => route.page === path && route.lang === language
+  const translatedRoute = routes.find(
+    (route) => route.page === '/' + path && route.name.startsWith(language)
   );
 
-  // const translatedRoute = routes.find(
-  //   (route) => route.page === path && route.lang === language
-  // );
+  const newPath = translatedRoute.toPath(params);
 
-  return (
-    <RouterLink route={translatedRoute.name} params={params}>
-      {children}
-    </RouterLink>
-  );
+  return <RouterLink route={newPath}>{children}</RouterLink>;
 };
 
 export default withTranslation()(Link);

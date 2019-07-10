@@ -6,9 +6,6 @@ const Link = require('./i18n').Link;
 const nextRoutesRouter = nextRoutes({ Link });
 
 // add each route in our routeMap to the next-routes router
-routeMap.forEach((route) => {
-  route.name = route.lang + route.name;
-  nextRoutesRouter.add(route);
-});
+routeMap.forEach((route) => nextRoutesRouter.add(route));
 
 module.exports = nextRoutesRouter;

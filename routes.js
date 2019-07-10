@@ -1,27 +1,24 @@
 const routeMap = [
   {
     page: 'dinosaur',
-    lang: 'en',
     pattern: '/dinosaur/:dinosaur',
-    name: 'dinosaur',
+    name: 'en-dinosaur',
   },
   {
     page: 'dinosaur',
-    lang: 'de',
     pattern: '/dinosaurier/:dinosaur',
-    name: 'dinosaurier',
+    name: 'de-dinosaur',
   },
   {
     page: 'dinosaur',
-    lang: 'fr',
     pattern: '/dinosaure/:dinosaur',
-    name: 'dinosaure',
+    name: 'fr-dinosaur',
   },
   {
     page: 'dinosaur',
     lang: 'it',
     pattern: '/dinosauro/:dinosaur',
-    name: 'dinosauro',
+    name: 'it-dinosaur',
   },
 ];
 

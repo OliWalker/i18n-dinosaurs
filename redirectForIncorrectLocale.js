@@ -1,5 +1,4 @@
 const routes = require('./router').routes;
-const routeMap = require('./routes');
 const i18n = require('./i18n');
 
 export function redirectIfIncorrectLocale(ctx, router) {
@@ -14,47 +13,30 @@ export function redirectIfIncorrectLocale(ctx, router) {
     // just a check to stop any wierd errors
     if (!query || !router.asPath) return;
 
-    const theRoute = routes.find((route) => {
-      return route.toPath(query) === router.asPath;
-    });
+    // find our current route
+    const currentRoute = routes.find(
+      (route) => route.toPath(query) === router.asPath
+    );
 
-    if (theRoute && !theRoute.name.startsWith(language)) {
-      const page = theRoute.page.slice(1);
-      const newRoute = routeMap.find((route) => {
-        route.page === page && router.lang === language;
-      });
+    // check if the route is with the correct lang
+    if (currentRoute && !currentRoute.name.startsWith(language)) {
+      // find the route to the same page, with the correct lang
+      const newRoute = routes.find(
+        (route) =>
+          route.page === currentRoute.page && route.name.startsWith(language)
+      );
 
-      console.log('NEWROUTE', newRoute);
+      // use the toPath to get the exact path
+      const path = newRoute.toPath(query);
+
+      // another check to stop wierd errors
+      if (ctx.res && newRoute) {
+        // redirect
+        ctx.res.writeHead(301, {
+          Location: `/${language}${path}`,
+        });
+        ctx.res.end();
+      }
     }
   }
 }
-
-// 		return
-//     const route = routes.find((route) => {
-// 				(route) => route.lang === language && route.name ===
-// 			);
-//       // toPath() will throw in production if the params object is invalid
-//       try {
-//         return route.toPath(getRouteParams(query)) === pathname;
-//       } catch {
-//         return false;
-//       }
-//     });
-
-//     if (route && !route.name.startsWith(language)) {
-//       // route.page starts with a '/' so we slice that off
-//       const newRoute = getRoute(route.page.slice(1), language);
-
-//       if (ctx.res && newRoute) {
-//         const newPath = search
-//           ? newRoute.toPath({}) + search
-//           : newRoute.toPath(getRouteParams(query));
-
-//         ctx.res.writeHead(301, {
-//           Location: `/${language}${newPath}`,
-//         });
-//         ctx.res.end();
-//       }
-//     }
-//   }
-// }
