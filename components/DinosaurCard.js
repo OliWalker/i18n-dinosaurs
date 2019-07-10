@@ -6,7 +6,7 @@ import css from '../styles.css';
 const DinosaurCard = ({ dinosaur, t }) => {
   return (
     // Let's take the Link out of the index and use it here
-    <Link path='dinosaur' params={{ dinosaur: dinosaur.name }}>
+    <Link path='/dinosaur' params={{ dinosaur: dinosaur.name }}>
       <a>
         <div className={css.dinosaurCard}>
           {/* <img src={dinosaur.image} /> */}

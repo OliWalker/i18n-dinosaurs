@@ -1,6 +1,6 @@
 import React from 'react';
 import { withTranslation } from '../i18n';
-import { Link } from '../router';
+import Link from '../components/Link';
 
 const LanguagePicker = ({ i18n }) => {
   const { language } = i18n; //This gets the current language
@@ -9,7 +9,7 @@ const LanguagePicker = ({ i18n }) => {
   };
   return (
     <header>
-      <Link route='/'>
+      <Link path='/'>
         <a>
           <h1>Logo</h1>
         </a>

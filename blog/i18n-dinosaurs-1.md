@@ -264,7 +264,7 @@ Now we must change our package.json scripts, because we are not using the next s
 "scripts": {
     "dev": "node server.js",
     "build": "next build",
-    "start": "NODE_ENV=production node index.js"
+    "start": "NODE_ENV=production node server.js"
   }
 ```
 
@@ -282,4 +282,18 @@ meaning we are good to go!
 
 over on `http://localhost:3000/en` we should see our beautifully interpolated banner!
 
-switching the url from `http://localhost:3000/en` to `http://localhost:3000/de` or to any other of your languages you will see the language changes as expected - perfect, for now...
+switching the url from `http://localhost:3000/en` to `http://localhost:3000/de` or to any other of your languages you will see the language changes as expected - perfect!
+
+### Final note
+
+When building and running the application, next-i18next expects a `common.json` file in each of the locales. This is where you would put common used tranlsations accross multiple pages. We will not be using this in our app but it is nescerary for running a built version of Next so even though it will remain empty we will still add it to each locale.
+
+```
+.
+└── static
+|   └── locales
+|       ├── de
+|       |   ├── common.json
+|       |   └── homePage.json
+...
+```

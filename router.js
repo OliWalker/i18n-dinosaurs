@@ -1,5 +1,5 @@
 const nextRoutes = require('@yolkai/next-routes').default;
-const routeMap = require('./routes');
+const routeMap = require('./routeMap');
 const Link = require('./i18n').Link;
 
 // Initialise our next-routes

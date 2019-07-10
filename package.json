@@ -1,33 +1,33 @@
 {
-	"name": "i18n-dinosaurs",
-	"version": "1.0.0",
-	"description": "Demo to i18n a Next.js app",
-	"main": "index.js",
-	"scripts": {
-		"next": "next",
-		"dev": "node server.js",
-		"build": "next build",
-		"start": "NODE_ENV=production node index.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/OliWalker/i18n-dinosaurs.git"
-	},
-	"keywords": [],
-	"author": "",
-	"license": "ISC",
-	"bugs": {
-		"url": "https://github.com/OliWalker/i18n-dinosaurs/issues"
-	},
-	"homepage": "https://github.com/OliWalker/i18n-dinosaurs#readme",
-	"dependencies": {
-		"@yolkai/next-routes": "^3.0.0",
-		"@zeit/next-css": "^1.0.1",
-		"express": "4.17.1",
-		"next": "8.1.0",
-		"next-i18next": "0.44.0",
-		"react": "16.8.6",
-		"react-dom": "16.8.6"
-	}
+  "name": "i18n-dinosaurs",
+  "version": "1.0.0",
+  "description": "Demo to i18n a Next.js app",
+  "main": "index.js",
+  "scripts": {
+    "next": "next",
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "NODE_ENV=production node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OliWalker/i18n-dinosaurs.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OliWalker/i18n-dinosaurs/issues"
+  },
+  "homepage": "https://github.com/OliWalker/i18n-dinosaurs#readme",
+  "dependencies": {
+    "@yolkai/next-routes": "^3.0.0",
+    "@zeit/next-css": "^1.0.1",
+    "express": "4.17.1",
+    "next": "8.1.0",
+    "next-i18next": "0.44.0",
+    "react": "16.8.6",
+    "react-dom": "16.8.6"
+  }
 }

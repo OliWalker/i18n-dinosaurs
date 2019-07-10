@@ -16,7 +16,6 @@ const routeMap = [
   },
   {
     page: 'dinosaur',
-    lang: 'it',
     pattern: '/dinosauro/:dinosaur',
     name: 'it-dinosaur',
   },

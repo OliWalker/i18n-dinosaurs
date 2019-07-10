@@ -14,29 +14,38 @@ npm i @yolkai/next-routes
 
 The aim is to create a custom router to have translated url slugs point to the correct page in the pages directory.
 
-Lets add a `router.js` file in the top level directory and also a `routes.js`.
+Lets add a `router.js` file in the top level directory and also a `routeMap.js`.
 
-The `routes.js` is very simple, it will be the route map for our application. Here, each route needs various properties, required for next-routes are:
+The `routeMap.js` is very simple, it will be the route map for our application. Here, each route needs various properties, required for next-routes are:
 
 1. The page we want to point the route too
 2. The url pattern we want to match
-3. A name which must be unique
+3. A name which must be unique - we will use the lang and the page
 
-We will also add a `lang` for our own sake later.
-
-so the `routes.js` file should look like:
+so the `routeMap.js` file should look like:
 
 ```
 const routeMap = [
-  { page: 'dinosaur', lang: 'en', pattern: '/dinosaur', name: '/dinosaur' },
   {
     page: 'dinosaur',
-    lang: 'de',
-    pattern: '/dinosaurier',
-    name: '/dinosaurier',
+    pattern: '/dinosaur',
+    name: 'en-dinosaur',
   },
-  { page: 'dinosaur', lang: 'fr', pattern: '/dinosaure', name: '/dinosaure' },
-  { page: 'dinosaur', lang: 'it', pattern: '/dinosauro', name: '/dinosauro' },
+  {
+    page: 'dinosaur',
+    pattern: '/dinosaurier',
+    name: 'de-dinosaur',
+  },
+  {
+    page: 'dinosaur',
+    pattern: '/dinosaure',
+    name: 'fr-dinosaur',
+  },
+  {
+    page: 'dinosaur',
+    pattern: '/dinosauro',
+    name: 'it-dinosaur',
+  },
 ];
 
 module.exports = routeMap;
@@ -47,15 +56,13 @@ Now lets start building out our next-routes router, in the router.js file lets:
 
 ```
 import nextRoutes from '@yolkai/next-routes';
-import { routeMap } from './routes';
+import { routeMap } from './routeMap';
 
 // Initialise our next-routes
 const nextRoutes = nextRoutes();
 
 // add each route in our routeMap to the next-routes router
-routeMap.forEach((route) => {
-    nextRoutes.add(route);
-});
+routeMap.forEach((route) => nextRoutes.add(route));
 
 export default nextRoutes;
 ```
@@ -79,6 +86,16 @@ and then restart the server we should be able to access the translated dinosaur 
 ### Removing the query
 
 Great! now the url is translated, we notice that the query is still `?dinosaur=Tyranasaurus` - we want the localised too. Fortunately another benefit that next-routes adds is we can add a `:id` at the end of a route, making it more similar to traditional routing. Obviously we are not looking for an id but a `dinosaur` so lets add `/:dinosaur` to the end of each pattern in the routes.
+
+eg:
+
+```
+  {
+    page: 'dinosaur',
+    pattern: '/dinosaur/:dinosaur',
+    name: 'en-dinosaur',
+  },
+```
 
 Now if we head to `http://localhost:3000/dinosaur/Tyrannosaurus` then we are in business!
 
@@ -127,10 +144,11 @@ Once we have this we must also pass the route params to get the correct dinosaur
 ```
 import { Link as RouterLink } from '../router';
 import { withTranslation } from '../i18n';
-import routeMap from '../routes';
 
-const Link = ({ path, params, i18n, children }) => {
+// Here we take our already configured next-routes
+import { routes } from '../router';
 
+const Link = ({ path, params = {}, i18n, children }) => {
   // if the path is to the home - there are no translations
   if (path === '/') {
     return <RouterLink route='/'>{children}</RouterLink>;
@@ -138,22 +156,34 @@ const Link = ({ path, params, i18n, children }) => {
   // take the current language
   const { language } = i18n;
 
-  // find the translated route
-  const translatedRoute = routeMap.find(
-    (route) => route.page === path && route.lang === language
+  // Find the correct route based on page and the correct language
+  const translatedRoute = routes.find(
+    (route) => route.page === path && route.name.startsWith(language)
   );
 
-  return (
-    <RouterLink route={translatedRoute.name} params={params}>
-      {children}
-    </RouterLink>
-  );
+  // nextRoutes gives a handy "toPath" function
+  // where you pass the params and it spits out the correct URL
+  const newPath = translatedRoute.toPath(params);
+
+  return <RouterLink route={newPath}>{children}</RouterLink>;
 };
 
 export default withTranslation()(Link);
 ```
 
 Cool! and now to use this Link we can simply pass the page from the pages directory and also any query params needed and then boom, this Link component will handle which language url to push to!
+
+Lets change the Link in the `DinosaurCard.js` to look like
+
+```
+<Link path='/dinosaur' params={{ dinosaur: dinosaur.name }}>
+```
+
+and in the header to simply
+
+```
+<Link path='/'>
+```
 
 ### Icing on the cake
 
