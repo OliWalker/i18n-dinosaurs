@@ -39,10 +39,6 @@ ErrorPage.getInitialProps = () => {
 export default withTranslation('')(ErrorPage);
 ```
 
-### Adding CSS
-
-TODO
-
 ### Changing languages
 
 It is essential that we have a way to change languages, we cannot rely on the client to manually change the url as it is poor UX - and also it would hit the server again meaning a refresh of all page data.
@@ -96,15 +92,16 @@ Our home page should now look like
 ...
 
 import { withTranslation, Link } from '../lib/i18n';
+import css from '../styles.css';
 
 const HomePage = ({ t }) => {
   return (
     <>
     <Header />
-    <div>
+    <div className={css.banner}>
       <h1>{t('banner')}</h1>
     </div>
-    <div>
+    <div className={css.dinosaurList}>
 
       <Link>
         <a>
