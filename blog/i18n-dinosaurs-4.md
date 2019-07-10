@@ -1,6 +1,6 @@
 # A guide to fully internationalising a universal web app.
 
-## Part Four of TODO
+## Part Four of Four
 
 ### Localising the url paths
 
@@ -137,9 +137,9 @@ So we have the Link from Next.js, the Link from next-i18next which both get pass
 
 in Components lets create a `Link.js` file and import our router link.
 
-The idea is to create a Link, which will take a `route` string that points to the desired `page` to render and also a `params` prop to pass to the url query. Then we will take this page, and the language, and using the RouteMap, find the correctly translated url slug to link to.
+The idea is to create a Link, which will take a `route` string that points to the desired `page` to render and also a `params` prop to pass to the url query. Then we will take this page and the language then use these to look through the routes to find the correctly translated route.
 
-Once we have this we must also pass the route params to get the correct dinosaur.
+Once we have this we can use a handy "toPath" function which allows us to pass a query to a route and it will give us the full URL to link to - cool!
 
 ```
 import { Link as RouterLink } from '../router';
@@ -205,3 +205,65 @@ class MyApp extends App {
 and now lets create this function.
 
 ### Redirecting for an incorrect locale
+
+This will have a few stages:
+
+1. first we will check if we are on the home page - i.e no need to redirect as the url is not translated
+2. then we must find which route we are on
+3. once found we must check if the language is correct or not
+4. if the language is not correct we must find the correct route
+5. and then use the toPath function again to find the correct URL
+6. and finally redirect to that url.
+
+The finished function should look like:
+
+```
+const routes = require('./router').routes;
+const i18n = require('./i18n');
+
+export function redirectIfIncorrectLocale(ctx, router) {
+  //console.log(router.asPath, router);
+
+  // if there is no request or we are going home where the url is not tranlsated - do nothing
+  if (ctx.req && router.asPath !== '/') {
+    // take the language out of the request, or, if first time load, from i18n
+    const language = ctx.req === null ? i18n.language : ctx.req.language;
+    const { query } = router;
+
+    // just a check to stop any wierd errors
+    if (!query || !router.asPath) return;
+
+    // find our current route
+    const currentRoute = routes.find(
+      (route) => route.toPath(query) === router.asPath
+    );
+
+    // check if the route is with the correct lang
+    if (currentRoute && !currentRoute.name.startsWith(language)) {
+      // find the route to the same page, with the correct lang
+      const newRoute = routes.find(
+        (route) =>
+          route.page === currentRoute.page && route.name.startsWith(language)
+      );
+
+      // use the toPath to get the exact path
+      const path = newRoute.toPath(query);
+
+      // another check to stop wierd errors
+      if (ctx.res && newRoute) {
+        // redirect
+        ctx.res.writeHead(301, {
+          Location: `/${language}${path}`,
+        });
+        ctx.res.end();
+      }
+    }
+  }
+}
+```
+
+and when importing that into our `_app` and heading to a URL such as `http://localhost:3000/de/dinosauro/Stegosaurus` we should get redirected to the italian version! Perfect!
+
+### End Note
+
+Now we have a fully translated app. TODO
