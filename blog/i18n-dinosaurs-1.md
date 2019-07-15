@@ -12,6 +12,8 @@ I thought Jurassic park was great, but, I found that it only really catered to o
 
 In this tutorial we will look at translating our Dinosaur related Next.js application into the four main languages of Switzerland - German, French, Italian and English so that everyone can get the full JP experience.
 
+[Here is what the full app will look like when finished](https://i18n-dinosaurs.herokuapp.com/)
+
 ## Set-up
 
 Lets create a new directory and install all the nescersary depenedencies.
@@ -93,7 +95,7 @@ npm i next-i18next
 To use Next-i18next we have a bit of config to do, so create a i18n.js file in the root and add
 
 ```
-const NextI18Next = require('next-i18next/dist/commonjs');
+const NextI18Next = require('next-i18next').default;
 
 const NextI18NextInstance = new NextI18Next({
 	defaultLanguage: 'en',
@@ -132,7 +134,7 @@ To get the translations into the app, Next expects them there on build time, so 
 
 and in the homePage.json lets add our banner to translate!
 
-static/locale/de/homePage.json
+static/locales/de/homePage.json
 
 ```
 {
@@ -140,7 +142,7 @@ static/locale/de/homePage.json
 }
 ```
 
-static/locale/en/homePage.json:
+static/locales/en/homePage.json:
 
 ```
 {
@@ -151,6 +153,8 @@ static/locale/en/homePage.json:
 etc.
 
 An important point to note, Next will take these translations at `build` time, therefore any change to the json files means a restart of the server.
+
+Next-i18 Next also needs a common.json in each of the locales sub-folders. This is where you would put translations used all over the app such as the title of the app, or the content of call to action buttons.
 
 ### Translating our app
 
@@ -200,7 +204,7 @@ By wrapping the page in the withTranslation HOC we have access to a couple of fu
 Our finished `pages/index` should look like:
 
 ```
-import { withTranslation } from '../lib/i18n';
+import { withTranslation } from '../i18n';
 
 const HomePage = ({ t }) => {
   return (
@@ -229,7 +233,7 @@ const express = require('express');
 const next = require('next');
 
 // middlewware to add translations
-const nextI18NextMiddleware = require('next-i18next/middleware');
+const nextI18NextMiddleware = require('next-i18next/middleware').default;
 
 // our i18next instance
 const nextI18next = require('./i18n');

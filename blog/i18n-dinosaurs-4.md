@@ -266,4 +266,6 @@ and when importing that into our `_app` and heading to a URL such as `http://loc
 
 ### End Note
 
-Now we have a fully translated app. TODO
+Now we have a fully translated app. When deploying I have also added a try/catch around the `route.toPath` functions as occasionally they will throw errors in a production enviroment.
+
+TODO write more stuff

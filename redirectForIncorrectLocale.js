@@ -27,7 +27,10 @@ export function redirectIfIncorrectLocale(ctx, router) {
       );
 
       // use the toPath to get the exact path
-      const path = newRoute.toPath(query);
+      let path = '';
+      try {
+        path = newRoute.toPath(query);
+      } catch (err) {}
 
       // another check to stop wierd errors
       if (ctx.res && newRoute) {
