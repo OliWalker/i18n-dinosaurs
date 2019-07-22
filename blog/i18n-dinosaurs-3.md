@@ -1,12 +1,21 @@
-# A guide to fully internationalising a universal web app.
+# A guide to building a fully international, universal web app.
+
+[Part One]('https://google.com')
+[Part Two]('https://google.com')
 
 ## Part Three of Four
 
+[Part Four]('https://google.com')
+
+## pre - note
+
+Here at Ginetta we strive to give our users the best possible web experience. We care a lot about performance and we care more about accessability. Our creations are for everyone to enjoy and a huge part of accessability is crossing the language barrier.
+
 ### Real Mock Data
 
-Let's add some mock data files to make the application a bit more interesting. In the root lets add a `data.js` which you can find [the data here](TODO)
+Let's add some mock data files to make the application a bit more interesting. In the root create a `data.js` where you can copy and paste the [data you find here](https://github.com/OliWalker/i18n-dinosaurs/blob/master/data.js).
 
-This means we can create a new comoponent to display the cards on our home screen `components/DinosaurCard.js` with the following code:
+Then we shall create a new component to display the cards on our home screen `components/DinosaurCard.js` with the following code:
 
 ```
 import { withTranslation,Link } from '../i18n'
@@ -32,7 +41,7 @@ const DinosaurCard = ({ dinosaur, t }) => {
 export default withTranslation('dinosaurCard')(DinosaurCard)
 ```
 
-of course now we must add this new json file for all of the languages, and afterwards, restart the server.
+Of course now we must add this new json file for all of the languages, and afterwards, restart the server.
 
 ```
 {
@@ -41,7 +50,7 @@ of course now we must add this new json file for all of the languages, and after
 }
 ```
 
-and we can import this component into the HomePage and then loop over the mock data and present our dinosaur cards under the Banner!
+Then we import this component into the HomePage and loop over the mock data to present our dinosaur cards under the banner.
 
 ```
 import DinosaurCard from '../components/DinosaurCard
@@ -53,7 +62,7 @@ import DinosaurCard from '../components/DinosaurCard
   </div>
 ```
 
-and rememeber, as stated in [part one](TODO), because this is a sub-component we must add this into the namespaces required array on the top level page (in this case index.js) to have this accessed on inital SSR - otherwise we will have a flash of untranslated content - ew.
+and remember, as stated in [part one](TODO), because this is a sub-component we must add this into the `namespaces required` array on the top level page (in this case index.js) to have access to the translations on the initial SSR - otherwise we will have a flash of untranslated content - ew.
 
 ```
 HomePage.getInitialProps = () => {
@@ -65,13 +74,13 @@ HomePage.getInitialProps = () => {
 export default withTranslation('homePage')(HomePage)
 ```
 
-Notice that we dont have to pass it to the withTranslation HOC, because we are not using it on this page. If we were to have multiple namespaces on one page we must seperate them in the `t function` by calling `t('homePage:banner')`. We will do this later!
+Notice that we don't have to pass it to the withTranslation HOC, because we are not using it on this page. If we were to have multiple namespaces on one page we must separate them when using the `t function` by calling `t('homePage:banner')`. We will do this later!
 
 ### Making a Flashy Dinosaur Page
 
 Now this is done we can pad out our dinosaur page a bit.
 
-We will create a more interesting page using the mock data, but importantly we change the `getInitialProps` function to find the correct dinosaur out of the mock data.
+We will create a more interesting page using the mock data, but importantly we shall change the `getInitialProps` function to find the correct dinosaur out of the mock data.
 
 By the end of this transformation our Dinosaur.js should look like:
 
@@ -121,7 +130,7 @@ export default withTranslation(['dinosaur', 'dinosaurCard'])(dinosaur);
 
 ```
 
-As you can see we have added a few new keys to the `dinosaur.json` so you better add them in too, then, of course, restart the server.
+As you can see we have added a few new keys to the `dinosaur.json` so we better add them in to the json too, and, as always, restart the server.
 
 ```
   "length": "Length",
@@ -130,10 +139,10 @@ As you can see we have added a few new keys to the `dinosaur.json` so you better
 
 but seeing as we already have the translation for `diet` we can use this from the `dinosaurCard.json`.
 
-However when we need two translation json files in one page, we must
+Remember when we need two translation json files in one page, we must
 
 1. return both namespaces from `getInitialProps`
-2. pass an array containg the namespaces to with HOC
+2. pass an array containing the namespaces to with HOC
 3. whenever we need a translation we need to prefix it with the namespace we are using.
 
 ### One More Issue
