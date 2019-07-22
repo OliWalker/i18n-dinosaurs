@@ -1,11 +1,11 @@
 # A guide to building a fully international, universal web app.
 
-[Part One]('https://google.com')
-[Part Two]('https://google.com')
+- [Part One]('https://google.com')
+- [Part Two]('https://google.com')
 
 ## Part Three of Four
 
-[Part Four]('https://google.com')
+- [Part Four]('https://google.com')
 
 ## pre - note
 
@@ -53,16 +53,16 @@ Of course now we must add this new json file for all of the languages, and after
 Then we import this component into the HomePage and loop over the mock data to present our dinosaur cards under the banner.
 
 ```
-import DinosaurCard from '../components/DinosaurCard
+import DinosaurCard from '../components/DinosaurCard'
 ...
-  <div>
+  <div className={css.dinosaurList}>
     {data.map((dinosaur) => (
       <DinosaurCard dinosaur={dinosaur} key={dinosaur.name}/>
     ))}
   </div>
 ```
 
-and remember, as stated in [part one](TODO), because this is a sub-component we must add this into the `namespaces required` array on the top level page (in this case index.js) to have access to the translations on the initial SSR - otherwise we will have a flash of untranslated content - ew.
+and remember, as stated in [part one](https://google.com), because this is a sub-component we must add this into the `namespaces required` array on the top level page (in this case index.js) to have access to the translations on the initial SSR - otherwise we will have a flash of untranslated content - ew.
 
 ```
 HomePage.getInitialProps = () => {
@@ -98,18 +98,18 @@ const dinosaur = ({ t, dinosaur }) => {
       <div className={css.dinosaurContent}>
         <h1>{t('dinosaur:myNameIs', { dinosaur: dinosaur.name })} </h1>
         <div className={css.dinosaurContent}>
-          <p>
-            <span>{t('dinosaurCard:diet')}:</span>
-            {dinosaur.diet}
-          </p>
-          <p>
-            <span>{t('dinosaurCard:diet')}:</span>
-            {dinosaur.diet}
-          </p>
-          <p>
-            <span>{t('dinosaurCard:diet')}:</span>
-            {dinosaur.diet}
-          </p>
+					<p>
+						<span>{t('dinosaurCard:diet')}:</span>
+						{dinosaur.diet}
+					</p>
+					<p>
+						<span>{t('dinosaur:length')}:</span>
+						{dinosaur.length}
+					</p>
+					<p>
+						<span>{t('dinosaur:weight')}:</span>
+						{dinosaur.weight}
+					</p>
         </div>
         <p>{dinosaur.info}</p>
       </div>

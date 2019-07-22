@@ -1,11 +1,11 @@
 # A guide to building a fully international, universal web app.
 
-[Part One]('https://google.com')
+- [Part One]('https://google.com')
 
 ## Part Two of Four
 
-[Part Three]('https://google.com')
-[Part Four]('https://google.com')
+- [Part Three]('https://google.com')
+- [Part Four]('https://google.com')
 
 ## pre - note
 
@@ -35,7 +35,7 @@ Sometimes we will also get an error messages in the terminal about not having na
 
 ```
 import Error from 'next/error';
-import { withTranslation } from '../lib/i18n';
+import { withTranslation } from '../i18n';
 
 const ErrorPage = () => <Error />;
 
@@ -63,7 +63,7 @@ The header will be simply a "logo" and a language picker. It will also be wrappe
 ```
 import { withTranslation } from '../lib/i18n';
 
-const LanguagePicker = ({ i18n }) => {
+const Header = ({ i18n }) => {
   const { language } = i18n; //This gets the current language
   const changeLanguage = (e) => {
     i18n.changeLanguage(e.target.value);
@@ -82,7 +82,7 @@ const LanguagePicker = ({ i18n }) => {
   );
 };
 
-export default withTranslation('')(LanguagePicker);
+export default withTranslation('')(Header);
 ```
 
 Now if we import this and use it in our index page we can change languages on the fly.
@@ -98,9 +98,8 @@ We must import and use the Link component from our `i18n instance` as we will ne
 Our home page should now look like:
 
 ```
-...
-
-import { withTranslation, Link } from '../lib/i18n';
+import Header from '../components/Header';
+import { withTranslation, Link } from '../i18n';
 import css from '../styles.css';
 
 const HomePage = ({ t }) => {
@@ -125,7 +124,7 @@ const HomePage = ({ t }) => {
       </Link>
 
     </div>
-    <>
+    </>
     );
 };
 ...
@@ -142,7 +141,7 @@ To be able to access the dinosaur query param in the dinosaur page we must run t
 
 ```
 import App, { Container } from 'next/app';
-import { appWithTranslation } from '../lib/i18n';
+import { appWithTranslation } from '../i18n';
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -181,7 +180,7 @@ const Dinosaur = ({t, dinosaur}) => {
   return (
     <>
     <Header />
-    <h1>{t('myNameIs ', {dinosaur})} </h1>
+    <h1>{t('myNameIs', {dinosaur})} </h1>
     </>
   )
 }
@@ -213,7 +212,7 @@ This means we can create a new json file - `static/locales/en/dinosaur.json` - f
 Finally, for good measure lets wrap the "Logo" with a Link from our `i18n instance` to be able to navigate back to the home page:
 
 ```
-<Link href='/'>LOGO</Link>
+<Link href='/'><a>LOGO</a></Link>
 ```
 
 Then if we restart our server we should have a navigable, translated Application!

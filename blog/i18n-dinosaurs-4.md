@@ -1,8 +1,8 @@
 # A guide to building a fully international, universal web app.
 
-[Part One]('https://google.com')
-[Part Two]('https://google.com')
-[Part Three]('https://google.com')
+- [Part One]('https://google.com')
+- [Part Two]('https://google.com')
+- [Part Three]('https://google.com')
 
 ## Part Four of Four
 
@@ -22,7 +22,7 @@ npm i @yolkai/next-routes
 
 The aim is to create a custom router to take the translated url slugs and point the translated url slugs to the correct page in the pages directory.
 
-Lets add a `router.js` file in the top level directory and also a `routeMap.js`.
+Lets add a `nextRouter.js` file in the top level directory and also a `routeMap.js`.
 
 The `routeMap.js` is very simple, it will be where we keep all the translated routes for our application. Here, each route needs various properties, required for next-routes are:
 
@@ -60,24 +60,25 @@ module.exports = routeMap;
 
 ```
 
-Now lets start building out our next-routes router, in the router.js file lets:
+Now lets start building out our next-routes router, in the nextRouter.js file lets:
 
 ```
-import nextRoutes from '@yolkai/next-routes';
-import { routeMap } from './routeMap';
+const nextRoutes = require('@yolkai/next-routes').default;
+const routeMap = require('./routeMap');
 
 // Initialise our next-routes
-const nextRoutes = nextRoutes();
+const nextRoutesRouter = nextRoutes();
 
 // add each route in our routeMap to the next-routes router
-routeMap.forEach((route) => nextRoutes.add(route));
+routeMap.forEach((route) => nextRoutesRouter.add(route));
 
-export default nextRoutes;
+module.exports = nextRoutesRouter;
+
 ```
 
 Now in our server.js file we must change from the app using the requestHandler to our custom router using getRequestHandler and passing the app to it as an argument.
 
-So if we require our `nextRouter` in the `server.js` file and then change
+So if we require our newly created `nextRoutesRouter` in the `server.js` file and then change
 
 ```
 const handle = app.getRequestHandler();
@@ -86,14 +87,12 @@ const handle = app.getRequestHandler();
 to
 
 ```
-const handle = nextRouter.getRequestHandler(app);
+const handle = nextRoutesRouter.getRequestHandler(app);
 ```
-
-and then restart the server we should be able to access the translated routes!
 
 ### Removing the query
 
-Great! now the url is translated, we notice that the query is still `?dinosaur=Tyranasaurus` - we want the localized also. Fortunately another benefit that next-routes adds is we can add a `:id` at the end of a route, making it more similar to traditional routing. Obviously we are not looking for an id but a `dinosaur` so lets add `/:dinosaur` to the end of each pattern in the routes.
+Now the url is translated,the query is still `?dinosaur=Tyranasaurus` - we want the localized also. Fortunately another benefit that next-routes adds is we can add a `:id` at the end of a route, making it more similar to traditional routing. Obviously we are not looking for an id but a `dinosaur` so lets add `/:dinosaur` to the end of each pattern in the routes.
 
 eg:
 
@@ -120,7 +119,7 @@ The Next-Routes can take a Link in it's constructor meaning we can pass the next
 In the router.js file we can import the next-i18n link component:
 
 ```
-const { Link } = require ('./i18n).Link
+const { Link } = require ('./i18n').Link
 ```
 
 and then pass the Link when we initialize next-routes:
@@ -146,11 +145,10 @@ The idea is to create a Link, which will take a `route` string that points to th
 Once we have this we can use a handy "toPath" function which allows us to pass a query to a route and it will give us the full translated URL to link to - cool!
 
 ```
-import { Link as RouterLink } from '../router';
 import { withTranslation } from '../i18n';
 
-// Here we take our already configured next-routes
-import { routes } from '../router';
+// Here we take our already configured next-routes and link
+import { routes, Link as RouterLink } from '../nextRouter';
 
 const Link = ({ path, params = {}, i18n, children }) => {
   // if the path is to the home - there are no translations
@@ -172,11 +170,12 @@ const Link = ({ path, params = {}, i18n, children }) => {
 };
 
 export default withTranslation()(Link);
+
 ```
 
 Now to use this Link we can simply pass the page from the pages directory and also any query params needed and then this Link component will handle which language url to push to.
 
-Lets change the Link in the `DinosaurCard.js` to look like
+Lets import our Link into `DinosaurCard.js` and then then change the Link in the to look like
 
 ```
 <Link path='/dinosaur' params={{ dinosaur: dinosaur.name }}>
@@ -188,9 +187,15 @@ and in the header to simply
 <Link path='/'>
 ```
 
+Due to Packages changing, this may not always work. If for you you are losing the language when linking through the pages, you can interpolate it in the route.
+
+```
+<RouterLink route={`/${language}${newPath}}>
+```
+
 ### Keepin The Languages Aligned
 
-So far everything is looking great, moving around our small, but international app feels almost perfect, however, currently we are able to go to `localhost:3000/it/dinosaur/Tyrannosaurus`. We should not be able to mismatch the url slug with the language prefix.
+So far everything is looking great, moving around our small, but internationasl app feels almost perfect, however, currently we are able to go to `localhost:3000/it/dinosaur/Tyrannosaurus`. We should not be able to mismatch the url slug with the language prefix.
 
 This wont happen when linking around the app in the client now we have built our Link component which finds the correct path, the only time it will happen will be when manually changing the url - which means we ping the server again. If we are hitting the server this means we are able to `redirect` the client.
 
@@ -221,13 +226,12 @@ This will have a few steps:
 The finished function should look like:
 
 ```
-const routes = require('./router').routes;
+const routes = require('./nextRouter').routes;
 const i18n = require('./i18n');
 
 export function redirectIfIncorrectLocale(ctx, router) {
-  //console.log(router.asPath, router);
 
-  // if there is no request or we are going home where the url is not tranlsated - do nothing
+  // if there is no request or we are going home where the url is not translated - do nothing
   if (ctx.req && router.asPath !== '/') {
     // take the language out of the request, or, if first time load, from i18n
     const language = ctx.req === null ? i18n.language : ctx.req.language;

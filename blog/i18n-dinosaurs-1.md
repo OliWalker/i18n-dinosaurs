@@ -2,15 +2,15 @@
 
 ## Part One of Four
 
-[Part Two]('https://google.com')
-[Part Three]('https://google.com')
-[Part Four]('https://google.com')
+- [Part Two]('https://google.com')
+- [Part Three]('https://google.com')
+- [Part Four]('https://google.com')
 
 ## pre - note
 
 Here at Ginetta we strive to give our users the best possible web experience. We care a lot about performance and we care more about accessability. Our creations are for everyone to enjoy and a huge part of accessability is crossing the language barrier.
 
-## intro
+## Intro
 
 Here at Ginetta we use Next.js to build our web applications - it is a framework on top of React which allows server-side rendering, static-exporting and client-side hydration for a full, fast universal web-app experience. However this is not a Next.js, React or CSS tutorial. Though we will not be doing anything too complex, some basic knowledge is of React is required.
 
@@ -158,7 +158,7 @@ static/locales/en/homePage.json:
 
 etc.
 
-An important point to note, Next will take these translations at `build` time, therefore any change to the json files means a restart of the server.
+Next will take these translations at `build` time, therefore any change to the json files means a restart of the server.
 
 Important. Next-i18 Next also needs a `common.json` file in each of the locales sub-folders. This is where you would put translations used all over the app such as the title of the app, or the content of call to action buttons. We won't be using it, but please add in an empty `common.json` file to be safe.
 
